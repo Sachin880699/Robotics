@@ -1,0 +1,11 @@
+Components list:
+---------------------------------------------
+* Arduino Uno
+* Soil Moisture Sensor
+* Water Pump Motor
+* L293D Driver
+* Lcd display
+* 10k potentiometer
+* 220ohm resistor
+* Veroboard
+* Some Jumper wire

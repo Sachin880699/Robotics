@@ -1,0 +1,55 @@
+#include "SoftwareSerial.h"
+
+#define r1 5
+int relay1 = LOW;
+
+#define r2 6
+int relay2 = LOW;
+
+#define r3 7
+int relay3 = LOW;
+
+ int BluetoothData;
+ SoftwareSerial HC05(3,2); 
+
+void setup() 
+{
+   
+pinMode( r1 ,OUTPUT);
+pinMode( r2 ,OUTPUT);
+pinMode( r3 ,OUTPUT);
+
+
+ HC05.begin(9600);
+}
+
+
+void loop() {
+
+
+  if (HC05.available())
+  {
+ BluetoothData=HC05.read();
+   
+ switch (BluetoothData) 
+ {
+                     
+            case 49:
+            relay1 = ~ relay1;
+            digitalWrite(r1,relay1);
+            delay(250);
+            break;
+            
+            case 50:
+            relay2 = ~ relay2;
+            digitalWrite(r2,relay2);
+            delay(250);
+            break;
+            
+            case 51:
+            relay3 = ~ relay3;
+            digitalWrite(r3,relay3);
+            delay(250);
+            break;
+     
+ }}}

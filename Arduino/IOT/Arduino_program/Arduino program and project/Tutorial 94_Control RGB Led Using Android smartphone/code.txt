@@ -1,0 +1,75 @@
+// color led controller app
+
+#include <Adafruit_NeoPixel.h> 
+#include <SoftwareSerial.h> 
+#include <avr/power.h>
+#ifdef __AVR__
+#endif
+#define PIN 6
+#define NL 126
+           
+                                       
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NL, PIN, NEO_GRB + NEO_KHZ800);
+SoftwareSerial BT(2,3);  // BT PIN TX,RX
+String RGB = ""; 
+String RGB_Previous = "255.255.255)"; 
+String ON = "ON";  
+String OFF = "OFF"; 
+boolean RGB_Completed = false;
+#define PIN     6 
+int Brightness=100;     
+void setup() {
+#if defined (__AVR_ATtiny85__)
+if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+strip.begin(); 
+strip.setBrightness(Brightness);
+ BT.begin(9600);  
+ RGB.reserve(30);
+
+}
+void loop() {
+ while(BT.available()){   
+   char ReadChar = (char)BT.read();  
+   if(ReadChar == ')'){
+     RGB_Completed = true; 
+   }else{                   
+      RGB += ReadChar;
+   }
+ }
+ if(RGB_Completed){              
+
+ if(RGB==ON){                        
+         digitalWrite(13,HIGH); 
+         RGB = RGB_Previous; 
+         Light_RGB_LED();          
+     }else if(RGB==OFF){                
+         digitalWrite(13,LOW);
+         RGB = "0.0.0)"; 
+         Light_RGB_LED();
+     }else{
+         Light_RGB_LED();   
+         RGB_Previous = RGB;     
+     }
+     RGB = "";           
+     RGB_Completed = false;    
+ }     
+ } 
+void Light_RGB_LED(){        
+if(RGB.length()>4 && RGB.length()<11) 
+{ 
+ RGB_Previous=RGB; 
+ int SP1 = RGB.indexOf('.');          
+ int SP2 = RGB.indexOf('.', SP1+1);               
+ int SP3 = RGB.indexOf('.', SP2+1);  
+ String G = RGB.substring(0, SP1);          
+ String R = RGB.substring(SP1+1, SP2);      
+ String B = RGB.substring(SP2+1, SP3);
+ 
+for(int i=0;i<NL;i++)             
+{                                 
+strip.setPixelColor(i,R.toInt(),G.toInt(),B.toInt());
+}
+strip.show();
+}
+}

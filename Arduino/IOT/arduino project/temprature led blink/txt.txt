@@ -1,0 +1,40 @@
+float temperatura;
+int pin7 = 7;
+int pin6 = 6;
+int pin5 = 5;
+int pin = A0;
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(pin7 , OUTPUT);
+  pinMode(pin6 , OUTPUT);
+  pinMode(pin5 , OUTPUT);
+ 
+}
+
+void loop()
+{
+  int value = analogRead(pin);
+  float millivolts = (value / 1023.0) * 5000;
+  float celsius = millivolts / 10; 
+  Serial.print(celsius);
+  Serial.println(" C");
+  if(celsius < 60){ 
+  digitalWrite(pin7, HIGH);
+  digitalWrite(pin6, LOW);
+  digitalWrite(pin5, LOW);
+  }
+  if((celsius > 51) && (celsius < 99)){ 
+  digitalWrite(pin6, HIGH);
+  digitalWrite(pin7, LOW);
+  digitalWrite(pin5, LOW);
+  }
+  if(celsius > 100){ 
+  digitalWrite(pin5, HIGH);
+  digitalWrite(pin6, LOW);
+  digitalWrite(pin7, LOW);
+  }
+  
+  delay(1000); 
+}

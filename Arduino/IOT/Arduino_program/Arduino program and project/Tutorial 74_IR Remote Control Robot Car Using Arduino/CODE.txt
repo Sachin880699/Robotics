@@ -1,0 +1,80 @@
+#include <IRremote.h>
+#define irPin 3
+IRrecv irrecv(irPin);
+decode_results results;
+ 
+int input1 = 17;  //A3
+int input2 = 16;  //A2
+int input3 = 19;  //A5
+int input4  =18;  //A4
+
+void setup() 
+{
+    irrecv.enableIRIn();
+
+    pinMode(input1, OUTPUT); 
+    pinMode(input2, OUTPUT);
+    pinMode(input3, OUTPUT); 
+    pinMode(input4, OUTPUT); 
+   
+}
+ 
+void loop() {
+  
+   
+   if (irrecv.decode(&results)) 
+   {
+      switch (results.value) {
+        
+                    case 33448095:  //forward
+            digitalWrite(input1, HIGH); 
+            digitalWrite(input2, LOW); 
+            digitalWrite(input3, LOW);   
+            digitalWrite(input4, HIGH);
+            
+            break;
+            
+            case 33464415:  //reverse
+            digitalWrite(input1, LOW); 
+            digitalWrite(input2, HIGH); 
+            digitalWrite(input3, HIGH);   
+            digitalWrite(input4, LOW);
+           
+            break;
+            
+            case 33472575:  //RIGHT
+            digitalWrite(input1, HIGH); 
+            digitalWrite(input2, LOW); 
+            digitalWrite(input3, HIGH);   
+            digitalWrite(input4, LOW);
+          
+            break;
+    
+            case 33439935:  //LEFT
+            digitalWrite(input1, LOW); 
+            digitalWrite(input2, HIGH); 
+            digitalWrite(input3, LOW);   
+            digitalWrite(input4, HIGH); 
+           
+            break;
+            
+            case 33456255:  //STOP
+            digitalWrite(input1, LOW); 
+            digitalWrite(input2, LOW); 
+            digitalWrite(input3, LOW);   
+            digitalWrite(input4, LOW);
+            
+            break;
+     
+
+      
+      
+      }
+      
+      
+ irrecv.resume();
+   }
+}
+
+
+

@@ -1,0 +1,65 @@
+
+#include <Servo.h>
+Servo myservo;
+const int analogInPin = A5;
+int sensorValue ; 
+
+int led1=11;
+int led2=12;
+int led3=13;   //drive motor
+
+void setup() {
+ Serial.begin(9600);
+
+pinMode(led1,OUTPUT);
+pinMode(led2,OUTPUT);  
+pinMode(led3,OUTPUT);  
+
+  digitalWrite(led1,0); 
+  digitalWrite(led2,0);
+  digitalWrite(led3,0); 
+
+
+myservo.attach(3);
+    
+
+ 
+}
+
+void loop() {
+sensorValue = analogRead(analogInPin);
+
+
+ Serial.print(sensorValue );
+ Serial.println("");
+
+
+if(sensorValue>100 && sensorValue<700 )
+{ delay(500);
+  myservo.write(28); 
+ digitalWrite(led1,1);   //centar
+ digitalWrite(led2,0);
+  digitalWrite(led3,0);
+  delay(1000); 
+}
+
+if(sensorValue>35 && sensorValue<50 )
+{ delay(500);
+  myservo.write(53); 
+  digitalWrite(led1,0); 
+  digitalWrite(led2,1);  // right
+  digitalWrite(led3,0); 
+   delay(1000); 
+}
+
+if(sensorValue>20 && sensorValue<35  )
+{ delay(500);
+  myservo.write(10); 
+  digitalWrite(led1,0); 
+  digitalWrite(led2,0);
+  digitalWrite(led3,1);
+  delay(1000);  
+}
+
+ }
+

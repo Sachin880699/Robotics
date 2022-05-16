@@ -1,0 +1,48 @@
+// include the library code:
+#include <LiquidCrystal.h>
+
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+int inches = 0;
+
+float cm = 0;
+
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);  // Clear the trigger
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigger pin to HIGH state for 10 microseconds
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  // Reads the echo pin, and returns the sound wave travel time in microseconds
+  return pulseIn(echoPin, HIGH);
+}
+
+void setup()
+{
+lcd.begin(16, 2);
+
+
+
+}
+
+void loop()
+{
+  // measure the ping time in cm
+  cm = 0.01723 * readUltrasonicDistance(7, 7);
+  // set up the LCD's number of columns and rows:
+  
+  // Print a message to the LCD.
+  lcd.print("Distance:");
+  lcd.setCursor(0, 1);
+  lcd.print(cm);
+  delay(1000); // Wait for 100 millisecond(s)
+  lcd.clear();
+  
+  
+}

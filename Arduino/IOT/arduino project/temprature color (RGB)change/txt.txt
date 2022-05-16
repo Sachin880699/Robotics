@@ -1,0 +1,43 @@
+void setup()
+{
+  pinMode(A0, INPUT);
+}
+
+void loop()
+{
+     int H ;
+     int R , G , B ;
+
+H = (-40 + 0.488155 * (analogRead(A0) - 20))+40;
+  delay(10); // Delay a little bit to improve simulation performance
+
+     // HSVのH値を0-360で回します
+     // for (H=0 ; H<=360 ; H++) 
+     {
+          // HSVのH値を各ＬＥＤのアナログ出力値(0-255)に変換する処理
+          if (H <= 120)
+          {
+               // H値(0-120) 赤-黄-緑
+               R = map(H,0,120,255,0) ;     // 赤LED R←→G
+               G = map(H,0,120,0,255) ;     // 緑LED G←→R
+               B = 0 ;
+          } else if (H <= 240) 
+          {
+               // H値(120-240) 緑-水色-青
+               G = map(H,120,240,255,0) ;   // 緑LED G←→B
+               B = map(H,120,240,0,255) ;   // 青LED B←→G
+               R = 0 ;
+          } else 
+          {
+               // H値(240-360) 青-紫-赤
+               B = map(H,240,360,255,0) ;   // 青LED B←→R
+               R = map(H,240,360,0,255) ;   // 青LED R←→B
+               G= 0 ;
+          }
+          // ＲＧＢＬＥＤに出力する処理
+          analogWrite(11,R) ;                // 　９番ピンから赤LEDの出力
+          analogWrite(9,G) ;               // １１番ピンから緑LEDの出力
+          analogWrite(10,B) ;               // １０番ピンから青LEDの出力
+          delay(100) ;
+     }
+}

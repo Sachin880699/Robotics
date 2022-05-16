@@ -1,0 +1,171 @@
+
+#include <Wire.h>
+#define DEVICE (0x53)    //ADXL345 device address
+#define TO_READ (6)        //num of bytes we are going to read each time (two bytes for each axis)
+
+byte buff[TO_READ] ;    //6 bytes buffer for saving data read from the device
+char str[512];                      //string buffer to transform data before sending it to the serial port
+
+int pos = 0;
+int anglex;
+int angley;
+
+int m1=11;
+int m2=10;
+int m3=13;
+int m4=12;
+void setup()
+{
+  
+  Wire.begin();        // join i2c bus
+pinMode(m1,OUTPUT);
+pinMode(m2,OUTPUT);
+pinMode(m3,OUTPUT);
+pinMode(m4,OUTPUT);
+
+  digitalWrite(m1, 0);
+  digitalWrite(m2, 0);
+  digitalWrite(m3, 0);
+  digitalWrite(m4, 0);
+  //Turning on the ADXL345
+  writeTo(DEVICE, 0x2D, 0);      
+  writeTo(DEVICE, 0x2D, 16);
+  writeTo(DEVICE, 0x2D, 8);
+  
+}
+
+void loop()
+{
+  int regAddress = 0x32;    //first axis-acceleration-data register on the ADXL345
+  int x, y, z;
+  
+  readFrom(DEVICE, regAddress, TO_READ, buff); //read the acceleration data from the ADXL345
+  
+   //each axis reading comes in 10 bit resolution, ie 2 bytes.  Least Significat Byte first!!
+   //thus we are converting both bytes in to one int
+  x = (((int)buff[1]) << 8) | buff[0];   
+  y = (((int)buff[3])<< 8) | buff[2];
+  z = (((int)buff[5]) << 8) | buff[4];
+  
+  anglex = x;
+  anglex = constrain(anglex, -260, 260);
+  angley = y;
+  angley = constrain(angley, -260, 260);
+  
+ anglex = map(anglex, -260, 260, 0, 100);
+ anglex =(anglex/2);
+ angley = map(angley, -260, 260, 0, 100);                                                                                                                                                                            
+  Serial.print(anglex);
+    Serial.print(" ");
+   Serial.println(angley);
+  //we send the x y z values as a string to the serial port
+ // sprintf(str, "%d %d", x, y);  
+  
+  //Serial.print(str);
+  //Serial.write(10);
+  
+  //It appears that delay is needed in order not to clog the port
+  delay(200);
+if(anglex >15 && anglex <39 && angley >35 && angley <70 ) 
+{
+  digitalWrite(m1, 0);
+  digitalWrite(m2, 0);  //S
+  digitalWrite(m3, 0);
+  digitalWrite(m4, 0);
+}
+
+if(anglex <15  ) 
+{
+  digitalWrite(m1, 1);
+  digitalWrite(m2, 0);   //R
+  digitalWrite(m3, 0);
+  digitalWrite(m4, 0);
+}
+
+if(anglex >39 ) 
+{
+  digitalWrite(m1, 0);
+  digitalWrite(m2, 0);  //L
+  digitalWrite(m3, 0);
+  digitalWrite(m4, 1);
+}
+
+if( angley <35 ) 
+{
+  digitalWrite(m1, 1);
+  digitalWrite(m2, 0);  //F
+  digitalWrite(m3, 0);
+  digitalWrite(m4, 1);
+}
+
+if(angley >70 ) 
+{
+  digitalWrite(m1, 0);
+  digitalWrite(m2, 1);  //B
+  digitalWrite(m3, 1);
+  digitalWrite(m4, 0);
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//---------------- Functions
+//Writes val to address register on device
+void writeTo(int device, byte address, byte val) {
+   Wire.beginTransmission(device); //start transmission to device 
+   Wire.write(address);        // send register address
+   Wire.write(val);        // send value to write
+   Wire.endTransmission(); //end transmission
+}
+
+//reads num bytes starting from address register on device in to buff array
+void readFrom(int device, byte address, int num, byte buff[]) {
+  Wire.beginTransmission(device); //start transmission to device 
+  Wire.write(address);        //sends address to read from
+  Wire.endTransmission(); //end transmission
+  
+  Wire.beginTransmission(device); //start transmission to device
+  Wire.requestFrom(device, num);    // request 6 bytes from device
+  
+  int i = 0;
+  while(Wire.available())    //device may send less than requested (abnormal)
+  { 
+    buff[i] = Wire.read(); // receive a byte
+    i++;
+  }
+  Wire.endTransmission(); //end transmission
+}

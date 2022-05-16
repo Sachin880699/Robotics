@@ -1,0 +1,113 @@
+#include <IRremote.h>
+#define irPin 3
+IRrecv irrecv(irPin);
+decode_results results;
+ 
+#include <Servo.h> 
+ 
+Servo myservo;  
+                
+ 
+int pos=0;
+
+int k=0;
+int s=0;
+
+void setup() 
+{
+    irrecv.enableIRIn();
+
+  myservo.attach(5);
+
+ 
+   
+}
+ 
+void loop() {
+  
+  myservo.write(pos);  
+   if (irrecv.decode(&results)) {
+ 
+      switch (results.value) {
+        
+             case 33444015:   // key 1
+             pos=0;               
+             delay(100);
+             break;  
+                        
+            case 33478695:     // key 2
+            pos=45; 
+            delay(100);
+            break;
+            
+            case 33486855:     // key 3
+            pos=90;
+            delay(100);
+            break;
+            
+            case 33435855:     // key 4
+            pos=135;
+            delay(100);
+            break;
+                        
+            case 33468495:     // key 5
+            pos=180; 
+            delay(100);
+            break;
+        
+        case 33472575:         // key >>|
+        k=1;
+           
+            delay(100);
+            break;
+            
+            case 33439935:      // key |<<
+            s=1;
+            delay(100);
+            break;
+            
+            
+            case 33456255:     //stop            
+            s=0;
+            k=0;
+            delay(100);
+            break;
+            
+
+         }
+ 
+   irrecv.resume();
+   }
+         if(k==1)
+           {
+            pos++;
+            delay(10);
+           } 
+            if(pos>180)
+            {pos=180;
+            k=0;
+            }
+            
+          if(s==1)
+           {
+            pos--;
+            delay(10);
+           } 
+            if(pos<0)
+            {pos=0;
+            s=0;
+            }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

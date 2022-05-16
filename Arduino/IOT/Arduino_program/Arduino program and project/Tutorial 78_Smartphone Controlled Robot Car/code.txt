@@ -1,0 +1,71 @@
+#include "SoftwareSerial.h"
+
+const int in1=17;
+const int in2=16;
+const int in3=19;
+const int in4=18;
+
+ int BluetoothData;
+ SoftwareSerial HC05(2,3); 
+
+void setup() 
+{
+pinMode( in1 ,OUTPUT);
+pinMode( in2 ,OUTPUT);
+pinMode( in3 ,OUTPUT);
+pinMode( in4 ,OUTPUT);
+HC05.begin(9600);
+}
+
+
+void loop() {
+
+
+  if (HC05.available())
+  {
+ BluetoothData=HC05.read();
+
+   
+ switch (BluetoothData) 
+ {
+            case 83:
+            digitalWrite(in1,0);
+            digitalWrite(in2,0);
+            digitalWrite(in3,0);   ///stop
+            digitalWrite(in4,0);
+            delay(10);
+            break;
+   
+            case 70:
+            digitalWrite(in1,1);
+            digitalWrite(in2,0);
+            digitalWrite(in3,0);   ///farwad
+            digitalWrite(in4,1);
+            delay(10);
+            break;
+            
+            case 66:
+            digitalWrite(in1,0);
+            digitalWrite(in2,1);
+            digitalWrite(in3,1);   ///rev
+            digitalWrite(in4,0);
+            delay(10);
+            break;
+            
+            case 76: 
+            digitalWrite(in1,1);
+            digitalWrite(in2,0);
+            digitalWrite(in3,1);   ///left
+            digitalWrite(in4,0);
+            delay(10);
+            break;
+            
+            
+            case 82:
+            digitalWrite(in1,0);
+            digitalWrite(in2,1);
+            digitalWrite(in3,0);   ///right
+            digitalWrite(in4,1);
+            delay(10);
+            break;
+      }}}
